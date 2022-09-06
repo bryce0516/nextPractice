@@ -5,7 +5,7 @@ type Props = any
 
 const Profile = (props: any) => {
   const {user} = props
-  console.log('profile', props)
+  if(!user) return null
   return (
     <div style={styles.profileBox}>
       <div style={styles.profileImageWrapper}>

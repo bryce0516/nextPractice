@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "date-fns": "^2.29.2",
     "next": "12.2.5",
     "pino": "^8.5.0",
     "pino-http": "^8.2.0",
