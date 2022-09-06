@@ -8,39 +8,38 @@ import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
 import { httpLog, log } from 'logger';
 
+type Props = {
+  user: any;
+};
 
-type Props = any
+// export const getServerSideProps = async () => {
+//   try {
+//     const res = await fetch('https://api.github.com/users/bryce0516');
+//     let result;
+//     if (res.status === 200) result = await res.json();
+//     else result = null;
+//     return {
+//       props: {
+//         user: result,
+//       },
+//     };
+//   } catch (error) {
+//     console.warn(error);
+//     return null;
+//   }
+// };
 
-export const getServerSideProps = async () => {
-  try {
-    const res = await fetch("https://api.github.com/users/jerrynim")
-    // httpLog('', res)
-    // console.log(res)
-    const content = res.headers.get('content-type')
-    // console.log(content)
-    // logger.info({
-    //   res
-    // })
-    return {props: {
-      text:" hellowrd"
-    }}
-  } catch(error) {
-    console.warn(error)
-  }
-}
-
-const Home: NextPage<Props> = (props) => {
-  console.log("this is home props", props)
-  const {user} = props
+const Home: NextPage<Props> = () => {
+  // console.log('this is home props', props);
+  // const { user } = props;
   const [name, setName] = React.useState<string>('');
-  const router = useRouter()
-  const username= user && user.name
-
+  const router = useRouter();
+  // const username = user && user.name;
 
   return (
     <div className={styles.container}>
       <h2>Link to tomato page</h2>
-      <img src="/logo.png" alt="logo"/>
+      <img src="/logo.png" alt="logo" />
       <div>
         <Link href="/tomato">
           <a>Move to &#39;/tomato&#39;</a>
@@ -53,13 +52,11 @@ const Home: NextPage<Props> = (props) => {
         </Link>
       </div>
       <div>
-        <Link href="/vegetable/[name]" as="/vegetable/potato">
-          <a>Move to &#39;/vegetable/potato&#39;</a>
+        <Link href={`/user/${name}`}>
+          <a>Move to &#39;깃허브 {name}검색하러가기&#39;</a>
         </Link>
       </div>
-      <p>
-        {name}
-      </p>
+      <p>{name}</p>
       <div>
         <input
           value={name}
@@ -68,8 +65,14 @@ const Home: NextPage<Props> = (props) => {
         />
       </div>
       <div>
-        <button onClick={() => router.push(`/vegetable/${name}`)}> go to tomato </button>
+        <button onClick={() => router.push(`/vegetable/${name}`)}>
+          go to tomato
+        </button>
       </div>
+{/* 
+      <div>
+        <p>깃허브 유저네임: {username}</p>
+      </div> */}
     </div>
   );
 };
