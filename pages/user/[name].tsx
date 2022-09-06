@@ -2,7 +2,8 @@ import { GetServerSideProps, PreviewData } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-
+import { GoLink, GoLocation, GoMail } from 'react-icons/go';
+import Profile from './component/Profile';
 type Props = any;
 // interface Params extends ParsedUrlQuery
 
@@ -13,13 +14,23 @@ export const getServerSideProps: GetServerSideProps<
 > = async ({ query }) => {
   try {
     console.log('this is query', query.name);
+    let userResult;
+    let repoResult;
     const res = await fetch(`https://api.github.com/users/${query.name}`);
-    let result;
-    if (res.status === 200) result = await res.json();
-    else result = null;
+    const repoRes = await fetch(
+      `https://api.github.com/users/${query.name}/repos?sort=updated&page=1&per_page=10`
+    );
+    if (res.status === 200 && repoRes.status === 200) {
+      userResult = await res.json();
+      repoResult = await repoRes.json();
+    } else {
+      userResult = null;
+      repoResult = null;
+    }
     return {
       props: {
-        user: result,
+        user: userResult,
+        repos: repoResult,
       },
     };
   } catch (error) {
@@ -27,6 +38,7 @@ export const getServerSideProps: GetServerSideProps<
     return {
       props: {
         user: null,
+        repos: null,
       },
     };
   }
@@ -38,47 +50,46 @@ const name = (props: Props) => {
 
   console.log(props);
   return (
-    <>
-      <div style={styles.profileBox}>
-        <div style={styles.profileImageWrapper}>
-          <img style={styles.profileImage} src={user.avatar_url}/> 
+    <div style={styles.userContentsWrapper}>
+      <Profile user={user}/>
+      <div style={styles.reposeWrapper}>
+        <div style={styles.reposHeader}>
+          Repositories
+          <span style={styles.reposCount}>{user.public_repos}</span>
         </div>
-        <h2 style={styles.profileUserName}>{user.name}</h2>
-        <h2 style={styles.profileUserLogin}>{user.login}</h2>
-        <h2 style={styles.profileUserBio}>{user.bio}</h2>
       </div>
-    </>
+    </div>
   );
 };
 
-const styles = {
-  profileBox: {
-    width: "25%",
-    maxWith: 272,
-    marginRight: 26
-  },
-  profileImageWrapper: {
-    width:"100%",
-    border: "1px solid #ele4e8"
-  },
-  profileImage: {
-    display:"block",
-    width:"100%"
-  },
-  profileUserName: {
-    margin:0,
-    paddingTop: 16,
-    fontSize: 26
-  },
-  profileUserLogin: {
-    margin: 0,
-    fontSize: 20
-  },
-  profileUserBio : {
-    margin: 0,
-    paddingTop: 16,
-    fontSize: 14
-  }
 
+const styles = {
+  userContentsWrapper: {
+    display:"flex",
+    padding:20
+  },
+  reposeWrapper: {
+    width: "100%",
+    height: "100vh",
+    overflow: 'scroll',
+    padding: '0px 16px'
+  },
+  reposHeader :{
+    padding: "16px, 0",
+    fontSize: 14,
+    fontWeight: "600",
+    borderBottom: "1px solid #ele4e8"
+  },
+  reposCount :{
+    display:"inline-block",
+    padding: '2px 5px',
+    marginLeft: 6,
+    fontSize: 12,
+    fontWeight: "600",
+    lineHeight: 1,
+    color: "#586069",
+    backgroundColor:"rgba(27, 31, 35, 0.08)",
+    borderRadius: 20
+  }
 }
 export default name;
