@@ -15,10 +15,11 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'react-hooks'],
   rules: {
-    quotes: ['error', 'single'],
     'no-unused-vars': 'off',
     'spaced-comment': 'off',
+    'react-hooks/rules-of-hooks': 'off', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn', // Checks effect dependencies
   },
 };
