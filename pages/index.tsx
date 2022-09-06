@@ -6,16 +6,41 @@ import Link from 'next/link';
 
 import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
+import { httpLog, log } from 'logger';
 
-const Home: NextPage = () => {
+
+type Props = any
+
+export const getServerSideProps = async () => {
+  try {
+    const res = await fetch("https://api.github.com/users/jerrynim")
+    // httpLog('', res)
+    // console.log(res)
+    const content = res.headers.get('content-type')
+    // console.log(content)
+    // logger.info({
+    //   res
+    // })
+    return {props: {
+      text:" hellowrd"
+    }}
+  } catch(error) {
+    console.warn(error)
+  }
+}
+
+const Home: NextPage<Props> = (props) => {
+  console.log("this is home props", props)
+  const {user} = props
   const [name, setName] = React.useState<string>('');
   const router = useRouter()
-
+  const username= user && user.name
 
 
   return (
     <div className={styles.container}>
       <h2>Link to tomato page</h2>
+      <img src="/logo.png" alt="logo"/>
       <div>
         <Link href="/tomato">
           <a>Move to &#39;/tomato&#39;</a>
